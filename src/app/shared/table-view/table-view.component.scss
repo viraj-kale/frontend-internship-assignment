@@ -1,78 +1,81 @@
-.table-view {
-  @apply
-  tw-w-full
-  tw-overflow-hidden
-  tw-border-collapse
-  tw-p-12-px
-  tw-table-auto
-}
-
-.table-row {
-  @apply
-  tw-h-60-px
-  tw-border
-  tw-border-solid
-  tw-border-light-border
-  tw-bg-table-header-bg
-  tw-pl-12-px;
-
-  .header {
-    @apply
-    tw-text-start
-    tw-w-1/3
-    tw-border-r
-    tw-border-l-0
-    tw-border-b-0
-    tw-border-t-0
-    tw-border-solid
-    tw-border-light-border
-  }
-
-}
-
-.table-body {
-  @apply
-  tw-border
-  tw-border-solid
-  tw-border-light-border
-  tw-border-t-0;
-
-  .row-data {
-    @apply
-    tw-h-40-px
-    tw-border-b
-    tw-border-l-0
-    tw-border-r-0
-    tw-border-t-0
-    tw-border-solid
-    tw-border-light-border
-  }
-}
-
-.table-view{
+.table-section {
   width: 100%;
 }
-thead{
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+
+.subject-heading,
+.total-books {
+  margin: 0 0 18px;
+  color: #231942;
+  font-size: 1.35rem;
+  font-weight: 800;
 }
-th{
-  background-color: #b9f2ee;
-  font-size: 1.5rem;
-  padding: .5% 2%;
- 
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #ececf3;
+  border-radius: 18px;
 }
-td, a, .author{
-  font-size: 1.3rem;
+
+.table-view {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
-tr{
-  padding: auto 2%;
+
+thead {
+  background: #eef8f7;
 }
-td{
-  padding: .5% 2%;
+
+th,
+td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #ececf3;
+  text-align: left;
+  vertical-align: top;
 }
-td:hover{
-  background-color: rgb(230, 230, 230);
+
+th {
+  color: #2e5870;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
-.total-books{
-  margin: 2% auto;
+
+td,
+a,
+.author {
+  color: #3c3c56;
+  font-size: 0.98rem;
+}
+
+a {
+  color: #5a36b1;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.row-data {
+  transition: background 0.2s ease;
+}
+
+.row-data:hover {
+  background: #faf9ff;
+}
+
+.row-data:last-child td {
+  border-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  th,
+  td {
+    padding: 14px;
+  }
 }

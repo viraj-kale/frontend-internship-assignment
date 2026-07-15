@@ -50,36 +50,76 @@ export class HomeComponent implements OnInit {
       debounceTime(500),
     ).
     subscribe((value: string) => {
-     if(value){
-      console.log(value);
-      this.query = value
+     const searchValue = value?.trim()
+     if(searchValue){
+      console.log(searchValue);
+      this.query = searchValue
+      this.currentPage = 0
       this.showClearSearchBtn = true
       this.showSearchResultsDialogue = true
       this.getBooks(this.query, this.tableSize, 0)
      } else {
+      this.query = "*"
+      this.currentPage = 0
       this.showClearSearchBtn = false
       this.showSearchResultsDialogue = false
-      this.getBooks("*", this.tableSize, this.currentPage)
+      this.getBooks(this.query, this.tableSize, this.currentPage)
      }
     });
   }
   getBooks(query:any, limit:any, offset:any){
     this.isLoading = true
-      this.searchService.getSearchedBooks(query, limit, limit*offset).subscribe((result) => {
+      this.searchService.getSearchedBooks(query, limit, limit*offset).subscribe({
+        next: (result) => {
         if(result.numFound > 0){
-          this.allBooksData = result?.docs
-        this.recordsLength = result?.numFound
-        this.isLoading = false
-        this.queryNotFound = false
-        this.totalPages = Math.floor(this.recordsLength / this.tableSize)
+          const books = result?.docs || []
+          this.allBooksData = this.shouldRandomizeBooks(query) ? this.shuffleBooks(books) : books
+          this.recordsLength = result?.numFound
+          this.queryNotFound = false
+          this.totalPages = Math.ceil(this.recordsLength / this.tableSize)
         } else {
+          this.allBooksData = []
+          this.recordsLength = 0
+          this.totalPages = 0
           this.queryNotFound = true
-        } 
-      })
+        }
+        this.isLoading = false
+        this.previousBtn = this.currentPage <= 0
+        this.nextBtn = this.currentPage + 1 >= this.totalPages
+      },
+      error: () => {
+        this.allBooksData = []
+        this.recordsLength = 0
+        this.totalPages = 0
+        this.queryNotFound = true
+        this.isLoading = false
+        this.previousBtn = true
+        this.nextBtn = true
+      }
+    })
+  }
+
+  private shouldRandomizeBooks(query: string): boolean {
+    return query === "*"
+  }
+
+  private shuffleBooks<T>(books: T[]): T[] {
+    const shuffledBooks = [...books]
+
+    for (let index = shuffledBooks.length - 1; index > 0; index--) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [shuffledBooks[index], shuffledBooks[randomIndex]] = [shuffledBooks[randomIndex], shuffledBooks[index]]
+    }
+
+    return shuffledBooks
   }
   previousPage(){
+    if (this.currentPage <= 0) {
+      return
+    }
+    this.currentPage--
     this.paramObj = {
-      "offset": this.currentPage--,
+      "offset": this.currentPage,
       "limit": this.tableSize,
       "query": this.query
     }
@@ -87,18 +127,25 @@ export class HomeComponent implements OnInit {
 
   }
   nextPage(){
+    if (this.currentPage + 1 >= this.totalPages) {
+      return
+    }
+    this.currentPage++
     this.paramObj = {
-      "offset": this.currentPage++,
+      "offset": this.currentPage,
       "limit": this.tableSize,
       "query": this.query
     }
     this.getBooks(this.query, this.tableSize, this.currentPage)
   }
-  tableSizeChange(value:any)
+  tableSizeChange(event: Event)
   {
+    const target = event.target as HTMLSelectElement
+    this.tableSize = Number(target.value)
+    this.currentPage = 0
     this.paramObj = {
-      "offset": this.currentPage * parseInt(value) + this.currentPage,
-      "limit": parseInt(value),
+      "offset": this.currentPage,
+      "limit": this.tableSize,
       "query": this.query
     }
     this.getBooks(this.query, this.tableSize, this.currentPage)

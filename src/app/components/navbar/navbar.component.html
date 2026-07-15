@@ -1,14 +1,40 @@
-<div class="tw-flex tw-flex-row tw-m-24-px navbar">
-    <section class="trending-subjects">
-      <ul class="tw-list-none tw-pl-0">
-        <button id="home-btn" (click)="goToHome()"><i class="fa fa-home" aria-hidden="true"></i> Home</button>
-        <button id="search-btn"  (click)="searchSubject()"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
-        <input type="text" *ngIf="navSearchBar" class="form-control" placeholder="Search Subjects" [(ngModel)]="term">
-        <div class="tw-font-600 tw-text-24-px navbar-header">Trending Subjects</div>
-        <li class="tw-text-16-px tw-cursor-pointer tw-p-12-px" *ngFor="let subject of trendingSubjects | filter:term"
-          routerLink="/trending-subject/{{ subject.name }}">
+<nav class="navbar" aria-label="Library navigation">
+  <section class="trending-subjects">
+    <div class="nav-actions">
+      <button
+        id="home-btn"
+        class="nav-button"
+        type="button"
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="fa fa-home" aria-hidden="true"></i>
+        Home
+      </button>
+
+      <button id="search-btn" class="nav-button" type="button" (click)="searchSubject()">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        Search
+      </button>
+    </div>
+
+    <input
+      type="text"
+      *ngIf="navSearchBar"
+      class="form-control subject-search"
+      placeholder="Search subjects"
+      [(ngModel)]="term"
+    />
+
+    <h2 class="navbar-header">Trending Subjects</h2>
+
+    <ul class="subject-list">
+      <li *ngFor="let subject of trendingSubjects | filter: term">
+        <a [routerLink]="['/trending-subject', subject.name]" routerLinkActive="active">
           {{ subject.name }}
-        </li>
-      </ul>
-    </section>
-  </div>
+        </a>
+      </li>
+    </ul>
+  </section>
+</nav>

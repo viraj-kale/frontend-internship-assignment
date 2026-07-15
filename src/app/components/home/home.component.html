@@ -1,56 +1,91 @@
-<div class="header">
-  <div class="tw-text-24-px tw-font-600">Open Books Library</div>
-  <div class="search-button">
-    <mat-icon class="tw-mt-16-px" aria-label="Search Icon">search</mat-icon>
-    <input
-      [formControl]="bookSearch"
-      name="searchKey"
-      type="text"
-      placeholder="Search Books"
-      class="tw-border-0 tw-bg-inherit"
-    />
-    <i
-      *ngIf="showClearSearchBtn"
-      class="fa fa-times"
-      aria-hidden="true"
-      (click)="clearSearch()"
-    ></i>
-  </div>
-</div>
-<div class="row">
-  <div class="col-2 main-content">
-    <front-end-internship-assignment-navbar></front-end-internship-assignment-navbar>
-  </div>
-  <div class="col-10">
-    <div *ngIf="queryNotFound">
-      <h1 class="no-res-found">No Results Found for "{{ query }}"</h1>
-    </div>
-    <div *ngIf="!isLoading">
-      <div *ngIf="showSearchResultsDialogue"><h2>Search Results for "{{ query }}"</h2></div>
-      <front-end-internship-assignment-table-view
-        (emitterObj)="paramObj = $event"
-        [booksList]="allBooksData"
-        [totalRecords]="recordsLength"
-        [parametersData]="paramObj"
-        [subjectName]="query"
-        [currentPage]="currentPage"
-      ></front-end-internship-assignment-table-view>
-      <div *ngIf="!displayTrendingSubjectsBook" class="page-no">
-        Page: {{ currentPage + 1 }} of {{ totalPages }}
+<div class="library-layout">
+  <front-end-internship-assignment-navbar></front-end-internship-assignment-navbar>
+
+  <main class="library-main">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Open Library</p>
+        <h1 class="page-title">Open Books Library</h1>
       </div>
-      <div class="table-navigation">
-        <button (click)="previousPage()" [disabled]="previousBtn">
-          <i class="fa fa-angle-left" aria-hidden="true"></i>Prev
+
+      <div class="search-button">
+        <mat-icon aria-hidden="true">search</mat-icon>
+        <input
+          [formControl]="bookSearch"
+          name="searchKey"
+          type="text"
+          placeholder="Search books by title or author"
+        />
+        <button
+          *ngIf="showClearSearchBtn"
+          class="clear-search"
+          type="button"
+          aria-label="Clear search"
+          (click)="clearSearch()"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
         </button>
-        <div class="table-size"><p>Items Per Page:</p>
-          <select class="form-control" (change)="tableSizeChange($event)" [(ngModel)]="tableSize">
-            <option *ngFor="let size of tableSizes">{{ size }}</option>
-          </select>
+      </div>
+    </header>
+
+    <section class="content-card">
+      <div *ngIf="queryNotFound" class="empty-state">
+        <h2>No results found for "{{ query }}"</h2>
+        <p>Try another title, author, or subject.</p>
+      </div>
+
+      <div *ngIf="!isLoading && !queryNotFound">
+        <div *ngIf="showSearchResultsDialogue" class="results-title">
+          <h2>Search results for "{{ query }}"</h2>
         </div>
-        <button (click)="nextPage()" [disabled]="nextBtn">
-          Next<i class="fa fa-angle-right" aria-hidden="true"></i>
-        </button>
+
+        <front-end-internship-assignment-table-view
+          (emitterObj)="paramObj = $event"
+          [booksList]="allBooksData"
+          [totalRecords]="recordsLength"
+          [parametersData]="paramObj"
+          [subjectName]="query"
+          [currentPage]="currentPage"
+        ></front-end-internship-assignment-table-view>
+
+        <div class="paginator">
+          <button
+            class="paginator__button"
+            type="button"
+            aria-label="Go to previous page"
+            (click)="previousPage()"
+            [disabled]="previousBtn"
+          >
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+            Prev
+          </button>
+
+          <div class="paginator__page-size">
+            <label for="table-size">Items per page</label>
+            <select
+              id="table-size"
+              class="paginator__select form-control"
+              (change)="tableSizeChange($event)"
+              [(ngModel)]="tableSize"
+            >
+              <option *ngFor="let size of tableSizes">{{ size }}</option>
+            </select>
+          </div>
+
+          <div class="paginator__page-count">Page {{ currentPage + 1 }} of {{ totalPages }}</div>
+
+          <button
+            class="paginator__button"
+            type="button"
+            aria-label="Go to next page"
+            (click)="nextPage()"
+            [disabled]="nextBtn"
+          >
+            Next
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </div>

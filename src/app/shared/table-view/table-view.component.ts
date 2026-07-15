@@ -36,14 +36,14 @@ export class TableViewComponent implements OnChanges {
 
   ngOnChanges() {
     this.totalPages = Math.ceil(this.totalRecords / this.tableSize)
-    if(this.booksList){
+    if(this.booksList?.length){
       this.displayData()
       console.log(this.booksList);
       
     } 
   }
 displayData(){  
-      this.booksList[0].hasOwnProperty(this.property) 
+      this.booksList[0]?.hasOwnProperty(this.property) 
       ? this.displayTrendingSubjectsBook = false 
       : this.displayTrendingSubjectsBook = true  
   }
